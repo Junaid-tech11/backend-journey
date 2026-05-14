@@ -8,12 +8,20 @@ const tasks = [];
 let nextId = 1;
 
 app.post('/tasks', (req, res) => {
-
-    console.log(req.body);
-
     const title = req.body.title;
     const description = req.body.description;
     const status = req.body.status;
+
+    // validation
+    if (!title) {
+        return res.status(400).json({ message: 'Title is required' });
+    }
+    if (!description) {
+        return res.status(400).json({ message: 'Description is required' });
+    }
+    if (!status) {
+        return res.status(400).json({ message: 'Status is required' });
+    }
 
 
 
