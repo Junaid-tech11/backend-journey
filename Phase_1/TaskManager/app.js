@@ -7,7 +7,7 @@ app.use(express.json());
 const tasks = [];
 let nextId = 1;
 
-app.post('/tasks', (req, res) => {
+app.post('/api/v1/tasks', (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
     const status = req.body.status;
@@ -38,12 +38,28 @@ app.post('/tasks', (req, res) => {
 
 })
 
-app.get('/tasks', (req, res) => {
+app.get('/api/v1/tasks/:id/summary', (req, res) => {
+    const id = parseInt(req.params.id);
+    const task = tasks.find(t => t.id === id);
+
+    if (!task) {
+        return res.status(404).json({ message: 'Task not found' });
+    }
+
+    res.json({
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        isCompleted: task.status === 'completed'
+    });
+});
+
+app.get('/api/v1/tasks', (req, res) => {
 
     res.json(tasks);
 })
 
-app.get('/tasks/:id', (req, res) => {
+app.get('/api/v1/tasks/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const task = tasks.find(t => t.id === id);
     if (task) {
@@ -57,7 +73,8 @@ app.get('/tasks/:id', (req, res) => {
     }
 })
 
-app.delete('/tasks/:id', (req, res) => {
+
+app.delete('/api/v1/tasks/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = tasks.findIndex(t => t.id === id);
 
@@ -69,7 +86,7 @@ app.delete('/tasks/:id', (req, res) => {
     res.json({ message: 'Task deleted successfully' })
 })
 
-app.put('/tasks/:id', (req, res) => {
+app.put('/api/v1/tasks/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const task = tasks.find(t => t.id === id);
 
@@ -83,6 +100,14 @@ app.put('/tasks/:id', (req, res) => {
     task.status = req.body.status || task.status;
 
     res.json(task);
+});
+
+app.use((req, res) => {
+    res.status(404).json({
+        message: 'Route not found',
+        method: req.method,
+        url: req.url
+    });
 });
 
 app.listen(3000, () => {
