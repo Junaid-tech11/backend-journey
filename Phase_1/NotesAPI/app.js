@@ -104,8 +104,7 @@ app.delete('/api/v1/notes/:id', (req, res) => {
     });
 });
 
-// =============================
-// PREVIEW NOTE
+
 // GET /api/v1/notes/:id/preview
 // =============================
 app.get('/api/v1/notes/:id/preview', (req, res) => {
